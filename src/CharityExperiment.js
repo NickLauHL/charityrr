@@ -256,18 +256,18 @@ const ChildSponsorshipExperiment = () => {
             <div className="bg-white rounded-xl p-6 sm:p-8 mb-6 sm:mb-8 shadow-lg">
               <div className="text-center space-y-4 sm:space-y-6 text-gray-700">
                 <p className="text-base sm:text-lg leading-relaxed">
-                  <strong>We are dedicated child advocates on a mission to help children break free from the cycle of poverty. Through sponsorships and donations, we partner with local communities to provide love, care, and protection—so every child has the chance to learn, grow, play, and dream.</strong>
+                  <strong>We are dedicated child advocates on a mission to break the cycle of poverty for children in need. Through sponsorships and donations, we partner with local communities to provide love, care, and protection—so every child has the chance to learn, grow, play, and dream.</strong>
                 </p>
                 
                 <p className="text-base sm:text-lg leading-relaxed">
-                  <strong>By sponsoring a child, you help provide the love and support they need to escape poverty. Sponsored children receive essentials such as daily living supply, medical care and education.</strong>
+                  <strong>By sponsoring a child, you help provide the love and support they need to overcome poverty. Sponsored children receive essentials such as daily living supplies, medical care and education.</strong>
                 </p>
               </div>
               
               {/* 高亮指示框 */}
               <div className="bg-gradient-to-r from-yellow-100 to-yellow-200 border-2 sm:border-3 border-orange-400 rounded-xl p-4 sm:p-6 text-center mt-6 sm:mt-8">
                 <h3 className="text-orange-800 text-lg sm:text-xl font-bold mb-2 sm:mb-4">
-                  View Photos of Children Waiting on a Sponsor
+                  View Photos of Children Waiting for a Sponsor
                 </h3>
                 <p className="text-orange-800 text-sm sm:text-base lg:text-lg font-semibold leading-relaxed">
                   Suppose your budget allows you to support only 3 children, at a cost of $50 per child.<br className="hidden sm:block" />
