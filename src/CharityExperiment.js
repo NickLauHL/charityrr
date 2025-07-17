@@ -8,14 +8,10 @@ const getExperimentType = () => {
 const ChildSponsorshipExperiment = () => {
   const experimentType = getExperimentType();
   
-  // 儿童数据
+  // 儿童数据 - 2个
   const childrenData = [
-    { id: 1, name: "Maine", age: 5, location: "Philippines", photo: "maine.jpg" },
-    { id: 2, name: "Oleya", age: 4, location: "Philippines", photo: "oleya.jpg" },
-    { id: 3, name: "Matena", age: 5, location: "Philippines", photo: "matena.jpg" },
-    { id: 4, name: "Vianna", age: 4, location: "Philippines", photo: "vianna.jpg" },
-    { id: 5, name: "Rhian", age: 5, location: "Philippines", photo: "rhian.jpg" },
-    { id: 6, name: "Alleah", age: 4, location: "Philippines", photo: "alleah.jpg" }
+    { id: 1, name: "Maine", age: 4, location: "Philippines", photo: "maine.jpg" },
+    { id: 2, name: "Oleya", age: 4, location: "Philippines", photo: "oleya.jpg" }
   ];
 
   // 状态管理
@@ -25,7 +21,7 @@ const ChildSponsorshipExperiment = () => {
   const [selectionTimes, setSelectionTimes] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [userActivityLog, setUserActivityLog] = useState([]);
-  const maxSelections = 3;
+  const maxSelections = 1; // 从3改为1
 
   // 打乱数组函数
   const shuffleArray = (array) => {
@@ -216,9 +212,17 @@ const ChildSponsorshipExperiment = () => {
 
   const getHighlightText = () => {
     if (experimentType === 'choose') {
-      return 'Please CHOOSE the 3 children you would most like to support.';
+      return 'Please CHOOSE the 1 child you would like to support.';
     } else {
-      return 'Please REMOVE the 3 children you would least like to support.';
+      return 'Please REMOVE the 1 child you would not like to support.';
+    }
+  };
+
+  const getInstructionText = () => {
+    if (experimentType === 'choose') {
+      return 'Before confirm, if you want to change your decision, simply click the selected child to undo and choose again.';
+    } else {
+      return 'Before confirm, if you want to change your decision, simply click the removed child to undo and remove again.';
     }
   };
 
@@ -253,7 +257,7 @@ const ChildSponsorshipExperiment = () => {
             </div>
             
             {/* 使命说明 */}
-            <div className="bg-white rounded-xl p-6 sm:p-8 mb-6 sm:mb-8 shadow-lg">
+            <div className="bg-white rounded-xl p-6 sm:p-8 mb-6 sm:mb-8 shadow-sm">
               <div className="text-center space-y-4 sm:space-y-6 text-gray-700">
                 <p className="text-base sm:text-lg leading-relaxed">
                   <strong>We are dedicated child advocates on a mission to break the cycle of poverty for children in need. Through sponsorships and donations, we partner with local communities to provide love, care, and protection—so every child has the chance to learn, grow, play, and dream.</strong>
@@ -270,8 +274,13 @@ const ChildSponsorshipExperiment = () => {
                   View Photos of Children Waiting for a Sponsor
                 </h3>
                 <p className="text-orange-800 text-sm sm:text-base lg:text-lg font-semibold leading-relaxed">
-                  Suppose your budget allows you to support only 3 children, at a cost of $50 per child.<br className="hidden sm:block" />
-                  <strong>{getHighlightText()}</strong>
+                  Suppose your budget allows you to support only 1 child.
+                </p>
+                <p className="text-orange-800 text-sm sm:text-base lg:text-lg font-bold leading-relaxed my-3">
+                  {getHighlightText()}
+                </p>
+                <p className="text-orange-800 text-xs sm:text-sm font-medium leading-relaxed">
+                  {getInstructionText()}
                 </p>
               </div>
             </div>
@@ -288,7 +297,7 @@ const ChildSponsorshipExperiment = () => {
         )}
 
         {/* 儿童卡片网格 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {displayChildren.map(child => {
             const isSelected = selectedChildren.includes(child.id);
             const buttonConfig = getButtonConfig(child);
@@ -296,17 +305,17 @@ const ChildSponsorshipExperiment = () => {
             return (
               <div 
                 key={child.id} 
-                className={`bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl relative overflow-hidden ${getCardStyle(child)}`}
+                className={`bg-white rounded-2xl shadow-sm border-2 transition-all duration-300 hover:shadow-md relative overflow-hidden ${getCardStyle(child)}`}
               >
                 {/* 选中标签 */}
                 {isSelected && (
-                  <div className="absolute top-3 right-3 bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold z-10 shadow-lg">
+                  <div className="absolute top-3 right-3 bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold z-10 shadow-sm">
                     ✓ {experimentType === 'choose' ? 'SELECTED' : 'REMOVED'}
                   </div>
                 )}
                 
                 {/* 图片容器 */}
-                <div className="h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden">
+                <div className="h-48 sm:h-56 lg:h-64 bg-white flex items-center justify-center overflow-hidden">
                   <img 
                     src={`/images/${child.photo}`} 
                     alt={child.name}
@@ -353,7 +362,7 @@ const ChildSponsorshipExperiment = () => {
 
         {/* 完成感谢信息 */}
         {isCompleted && (
-          <div className="bg-white rounded-xl p-6 sm:p-8 shadow-lg text-center">
+          <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm text-center">
             <p className="text-base sm:text-lg lg:text-xl font-semibold text-gray-700 leading-relaxed">
               <strong>Thanks for participating. Your response has been submitted to us. Please back to Qualtrics and complete the survey.</strong>
             </p>
@@ -366,7 +375,7 @@ const ChildSponsorshipExperiment = () => {
             <button 
               className={`px-8 sm:px-12 py-4 sm:py-5 text-lg sm:text-xl font-bold text-white rounded-full transition-all duration-300 transform focus:outline-none focus:ring-4 focus:ring-green-300 ${
                 selectedChildren.length === maxSelections 
-                  ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:-translate-y-1 shadow-lg hover:shadow-xl' 
+                  ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:-translate-y-1 shadow-sm hover:shadow-md' 
                   : 'bg-gray-400 cursor-not-allowed opacity-50'
               }`}
               onClick={handleSubmit}
@@ -381,7 +390,7 @@ const ChildSponsorshipExperiment = () => {
       {/* 固定计数器 - 只在未完成时显示 */}
       {!isCompleted && (
         <div className="fixed bottom-4 left-4 right-4 sm:bottom-6 sm:left-auto sm:right-6 sm:w-auto">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-full font-bold text-center text-sm sm:text-base shadow-lg border-2 sm:border-3 border-white">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-full font-bold text-center text-sm sm:text-base shadow-sm border-2 sm:border-3 border-white">
             {getCounterText()}
           </div>
         </div>
