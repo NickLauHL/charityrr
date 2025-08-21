@@ -260,7 +260,7 @@ const ChildSponsorshipExperiment = () => {
             <div className="bg-white rounded-lg p-8 sm:p-10 mb-8 border border-gray-200">
               <div className="text-center space-y-6 text-gray-700 max-w-4xl mx-auto">
                 <p className="text-lg sm:text-xl leading-relaxed font-light">
-                  Sponsorship is one of the most powerful ways you can make a difference in a child’s life. 
+                  Sponsorship is a powerful way you can make a difference in a child’s life. 
                 </p>
                 
                 <p className="text-lg sm:text-xl leading-relaxed font-light">
@@ -271,7 +271,7 @@ const ChildSponsorshipExperiment = () => {
               {/* 高亮指示框 */}
               <div className="bg-gray-50 border-2 border-gray-400 rounded-lg p-6 sm:p-8 text-center mt-8">
                 <h3 className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
-                  Maine and Oleya are Waiting for a Sponsor
+                  Maine and Oleya are waiting for a sponsor
                 </h3>
                 <p className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
                   Now you are considering sponsoring one of them.
