@@ -10,8 +10,8 @@ const ChildSponsorshipExperiment = () => {
   
   // 儿童数据 - 2个
   const childrenData = [
-    { id: 1, name: "Maine", age: 4, location: "Philippines", photo: "maine.jpg" },
-    { id: 2, name: "Oleya", age: 4, location: "Philippines", photo: "oleya.jpg" }
+    { id: 1, name: "Maine", photo: "maine.jpg" },
+    { id: 2, name: "Oleya", photo: "oleya.jpg" }
   ];
 
   // 状态管理
@@ -21,7 +21,7 @@ const ChildSponsorshipExperiment = () => {
   const [selectionTimes, setSelectionTimes] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [userActivityLog, setUserActivityLog] = useState([]);
-  const maxSelections = 1; // 从3改为1
+  const maxSelections = 1;
 
   // 打乱数组函数
   const shuffleArray = (array) => {
@@ -184,19 +184,19 @@ const ChildSponsorshipExperiment = () => {
     if (isSelected) {
       return {
         text: experimentType === 'choose' ? 'SELECTED ✓' : 'REMOVED ✓',
-        className: 'bg-green-500 hover:bg-green-600 text-white'
+        className: 'bg-gray-800 text-white border-2 border-gray-800'
       };
     } else {
       if (selectedChildren.length >= maxSelections) {
         return {
           text: experimentType === 'choose' ? 'CHOOSE' : 'KEEPING',
-          className: 'bg-orange-400 text-white cursor-not-allowed opacity-70',
+          className: 'bg-gray-300 text-gray-500 cursor-not-allowed border-2 border-gray-300',
           disabled: true
         };
       } else {
         return {
           text: experimentType === 'choose' ? 'CHOOSE' : 'REMOVE',
-          className: 'bg-orange-500 hover:bg-orange-600 hover:-translate-y-0.5 text-white'
+          className: 'bg-white text-gray-800 border-2 border-gray-400 hover:border-gray-600 hover:bg-gray-50'
         };
       }
     }
@@ -205,24 +205,24 @@ const ChildSponsorshipExperiment = () => {
   const getCardStyle = (child) => {
     const isSelected = selectedChildren.includes(child.id);
     if (isSelected) {
-      return 'border-green-500 bg-gradient-to-br from-green-50 to-green-100';
+      return 'border-gray-800 bg-gray-50';
     }
-    return 'border-transparent hover:-translate-y-2';
+    return 'border-gray-200 hover:border-gray-400 hover:shadow-sm';
   };
 
   const getHighlightText = () => {
     if (experimentType === 'choose') {
-      return 'Please CHOOSE the 1 child you would like to support.';
+      return 'Please CHOOSE the child you would like to sponsor.';
     } else {
-      return 'Please REMOVE the 1 child you would not like to support.';
+      return 'Please REMOVE the child you would not like to sponsor.';
     }
   };
 
   const getInstructionText = () => {
     if (experimentType === 'choose') {
-      return 'Before confirm, if you want to change your decision, simply click the selected child to undo and choose again.';
+      return 'Note: Before confirming, you can change your decision, click the child you previously selected and then choose again.';
     } else {
-      return 'Before confirm, if you want to change your decision, simply click the removed child to undo and remove again.';
+      return 'Note: Before confirming, you can change your decision, click the child you previously removed and then remove again.';
     }
   };
 
@@ -243,43 +243,43 @@ const ChildSponsorshipExperiment = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 sm:pb-24">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+    <div className="min-h-screen bg-gray-100 pb-20 sm:pb-24">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         
         {/* 头部和说明部分 - 只在未完成时显示 */}
         {!isCompleted && (
           <>
             {/* 主标题 */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl p-6 sm:p-8 lg:p-10 mb-6 sm:mb-8 text-center">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4">
-                Meet the Children Ready for Sponsorship
+            <div className="bg-white border-b-4 border-gray-800 rounded-lg p-8 sm:p-12 mb-8 text-center">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-800 leading-tight">
+                Sponsor a Child
               </h1>
             </div>
             
             {/* 使命说明 */}
-            <div className="bg-white rounded-xl p-6 sm:p-8 mb-6 sm:mb-8 shadow-sm">
-              <div className="text-center space-y-4 sm:space-y-6 text-gray-700">
-                <p className="text-base sm:text-lg leading-relaxed">
-                  <strong>We are dedicated child advocates on a mission to break the cycle of poverty for children in need. Through sponsorships and donations, we partner with local communities to provide love, care, and protection—so every child has the chance to learn, grow, play, and dream.</strong>
+            <div className="bg-white rounded-lg p-8 sm:p-10 mb-8 border border-gray-200">
+              <div className="text-center space-y-6 text-gray-700 max-w-4xl mx-auto">
+                <p className="text-lg sm:text-xl leading-relaxed font-light">
+                  Sponsorship is one of the most powerful ways you can make a difference in a child’s life. 
                 </p>
                 
-                <p className="text-base sm:text-lg leading-relaxed">
-                  <strong>By sponsoring a child, you help provide the love and support they need to overcome poverty. Sponsored children receive essentials such as daily living supplies, medical care and education.</strong>
+                <p className="text-lg sm:text-xl leading-relaxed font-light">
+                  When you sponsor a child, you connect directly with a child facing tough circumstances and help them grow up healthy, educated and safe.
                 </p>
               </div>
               
               {/* 高亮指示框 */}
-              <div className="bg-gradient-to-r from-yellow-100 to-yellow-200 border-2 sm:border-3 border-orange-400 rounded-xl p-4 sm:p-6 text-center mt-6 sm:mt-8">
-                <h3 className="text-orange-800 text-lg sm:text-xl font-bold mb-2 sm:mb-4">
-                  View Photos of Children Waiting for a Sponsor
+              <div className="bg-gray-50 border-2 border-gray-400 rounded-lg p-6 sm:p-8 text-center mt-8">
+                <h3 className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
+                  Maine and Oleya are Waiting for a Sponsor
                 </h3>
-                <p className="text-orange-800 text-sm sm:text-base lg:text-lg font-semibold leading-relaxed">
-                  Suppose your budget allows you to support only 1 child.
+                <p className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
+                  Now you are considering sponsoring one of them.
                 </p>
-                <p className="text-orange-800 text-sm sm:text-base lg:text-lg font-bold leading-relaxed my-3">
+                <p className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
                   {getHighlightText()}
                 </p>
-                <p className="text-orange-800 text-xs sm:text-sm font-medium leading-relaxed">
+                <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
                   {getInstructionText()}
                 </p>
               </div>
@@ -289,15 +289,15 @@ const ChildSponsorshipExperiment = () => {
 
         {/* 完成标题 - 只在完成时显示 */}
         {isCompleted && (
-          <div className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl p-6 sm:p-8 mb-6 sm:mb-8 text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
+          <div className="bg-white border-b-4 border-gray-800 rounded-lg p-8 sm:p-10 mb-8 text-center">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-800">
               {getCompletionTitle()}
             </h1>
           </div>
         )}
 
         {/* 儿童卡片网格 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 mb-10">
           {displayChildren.map(child => {
             const isSelected = selectedChildren.includes(child.id);
             const buttonConfig = getButtonConfig(child);
@@ -305,49 +305,38 @@ const ChildSponsorshipExperiment = () => {
             return (
               <div 
                 key={child.id} 
-                className={`bg-white rounded-2xl shadow-sm border-2 transition-all duration-300 hover:shadow-md relative overflow-hidden ${getCardStyle(child)}`}
+                className={`bg-white rounded-lg border-2 transition-all duration-300 relative overflow-hidden ${getCardStyle(child)}`}
               >
                 {/* 选中标签 */}
                 {isSelected && (
-                  <div className="absolute top-3 right-3 bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold z-10 shadow-sm">
+                  <div className="absolute top-4 right-4 bg-gray-800 text-white px-3 py-1 rounded text-sm font-medium z-10">
                     ✓ {experimentType === 'choose' ? 'SELECTED' : 'REMOVED'}
                   </div>
                 )}
                 
                 {/* 图片容器 */}
-                <div className="h-48 sm:h-56 lg:h-64 bg-white flex items-center justify-center overflow-hidden">
+                <div className="h-80 sm:h-96 bg-gray-50 flex items-center justify-center overflow-hidden">
                   <img 
                     src={`/images/${child.photo}`} 
                     alt={child.name}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain grayscale"
                     onError={(e) => {
                       e.target.style.display = 'none';
-                      e.target.parentElement.innerHTML = `<div class="text-gray-500 font-medium">Photo of ${child.name}</div>`;
+                      e.target.parentElement.innerHTML = `<div class="text-gray-500 font-light text-lg">Photo of ${child.name}</div>`;
                     }}
                   />
                 </div>
                 
                 {/* 信息区域 */}
-                <div className="p-4 sm:p-6">
-                  <h3 className="text-xl sm:text-2xl font-bold text-blue-800 text-center mb-3 sm:mb-4">
+                <div className="p-6 sm:p-8">
+                  <h3 className="text-2xl sm:text-3xl font-light text-gray-800 text-center mb-6">
                     {child.name}
                   </h3>
-                  
-                  <div className="space-y-2 mb-4 sm:mb-6">
-                    <div className="flex items-center text-gray-600">
-                      <span className="text-base sm:text-lg mr-2 sm:mr-3">📍</span>
-                      <span className="text-sm sm:text-base">{child.location}</span>
-                    </div>
-                    <div className="flex items-center text-gray-600">
-                      <span className="text-base sm:text-lg mr-2 sm:mr-3">🎂</span>
-                      <span className="text-sm sm:text-base">{child.age} years old</span>
-                    </div>
-                  </div>
                   
                   {/* 按钮 - 只在未完成时显示 */}
                   {buttonConfig && (
                     <button 
-                      className={`w-full py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-base font-bold rounded-full transition-all duration-200 transform focus:outline-none focus:ring-4 focus:ring-opacity-50 ${buttonConfig.className}`}
+                      className={`w-full py-4 px-6 text-base font-medium rounded transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ${buttonConfig.className}`}
                       onClick={() => !buttonConfig.disabled && toggleSelection(child.id)}
                       disabled={buttonConfig.disabled}
                     >
@@ -362,21 +351,21 @@ const ChildSponsorshipExperiment = () => {
 
         {/* 完成感谢信息 */}
         {isCompleted && (
-          <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm text-center">
-            <p className="text-base sm:text-lg lg:text-xl font-semibold text-gray-700 leading-relaxed">
-              <strong>Thanks for participating. Your response has been submitted to us. Please back to Qualtrics and complete the survey.</strong>
+          <div className="bg-white rounded-lg p-8 sm:p-10 border border-gray-200 text-center">
+            <p className="text-lg sm:text-xl font-light text-gray-700 leading-relaxed">
+              Thanks for participating. Your response has been submitted to us. Please back to Qualtrics and complete the survey.
             </p>
           </div>
         )}
 
         {/* 确认按钮 - 只在未完成时显示 */}
         {!isCompleted && (
-          <div className="flex justify-center mb-6 sm:mb-8">
+          <div className="flex justify-center mb-8">
             <button 
-              className={`px-8 sm:px-12 py-4 sm:py-5 text-lg sm:text-xl font-bold text-white rounded-full transition-all duration-300 transform focus:outline-none focus:ring-4 focus:ring-green-300 ${
+              className={`px-12 py-4 text-xl font-medium text-white rounded transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ${
                 selectedChildren.length === maxSelections 
-                  ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:-translate-y-1 shadow-sm hover:shadow-md' 
-                  : 'bg-gray-400 cursor-not-allowed opacity-50'
+                  ? 'bg-gray-800 hover:bg-gray-900' 
+                  : 'bg-gray-400 cursor-not-allowed'
               }`}
               onClick={handleSubmit}
               disabled={selectedChildren.length !== maxSelections}
@@ -389,8 +378,8 @@ const ChildSponsorshipExperiment = () => {
 
       {/* 固定计数器 - 只在未完成时显示 */}
       {!isCompleted && (
-        <div className="fixed bottom-4 left-4 right-4 sm:bottom-6 sm:left-auto sm:right-6 sm:w-auto">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-full font-bold text-center text-sm sm:text-base shadow-sm border-2 sm:border-3 border-white">
+        <div className="fixed bottom-6 left-6 right-6 sm:left-auto sm:right-6 sm:w-auto">
+          <div className="bg-white border-2 border-gray-800 text-gray-800 px-6 py-3 rounded font-medium text-center text-base shadow-sm">
             {getCounterText()}
           </div>
         </div>
