@@ -267,7 +267,7 @@ const ChildSponsorshipExperiment = () => {
               {/* 高亮指示框 */}
               <div className="bg-gray-50 border-2 border-gray-400 rounded-lg p-6 sm:p-8 text-center mt-8">
                 <h3 className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
-                  Maine and Oleya—shown below—have each received successful cleft palate surgery. Sponsorship helps fund their ongoing care.
+                  Maine and Oleya have each received successful cleft palate surgery. Sponsorship helps fund their further care.
                 </h3>
                 <p className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
                   Now you are considering sponsoring one of them.
