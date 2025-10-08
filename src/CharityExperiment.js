@@ -8,6 +8,9 @@ const getExperimentType = () => {
 const StudentSponsorshipExperiment = () => {
   const experimentType = getExperimentType();
   
+  // 检测是否在iframe中
+  const isInIframe = window.self !== window.top;
+  
   // 学生数据 - 6个
   const studentsData = [
     { id: 1, name: "Chloe", photo: "chloe.png" },
