@@ -5,23 +5,27 @@ const getExperimentType = () => {
   return urlParams.get('type') || 'remove';
 };
 
-const ChildSponsorshipExperiment = () => {
+const StudentSponsorshipExperiment = () => {
   const experimentType = getExperimentType();
   
-  // 儿童数据 - 2个
-  const childrenData = [
-    { id: 1, name: "Maine", photo: "maine.jpg" },
-    { id: 2, name: "Oleya", photo: "oleya.jpg" }
+  // 学生数据 - 6个
+  const studentsData = [
+    { id: 1, name: "Chloe", photo: "chloe.png" },
+    { id: 2, name: "Emily", photo: "emily.png" },
+    { id: 3, name: "Hannah", photo: "hannah.png" },
+    { id: 4, name: "Lauren", photo: "lauren.png" },
+    { id: 5, name: "Megan", photo: "megan.png" },
+    { id: 6, name: "Olivia", photo: "olivia.png" }
   ];
 
   // 状态管理
-  const [children, setChildren] = useState([]);
-  const [selectedChildren, setSelectedChildren] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
   const [experimentStartTime, setExperimentStartTime] = useState(null);
   const [selectionTimes, setSelectionTimes] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [userActivityLog, setUserActivityLog] = useState([]);
-  const maxSelections = 1;
+  const maxSelections = 3; // 改为六选三
 
   // 打乱数组函数
   const shuffleArray = (array) => {
@@ -35,104 +39,90 @@ const ChildSponsorshipExperiment = () => {
 
   // 初始化
   useEffect(() => {
-    setChildren(shuffleArray(childrenData));
+    setStudents(shuffleArray(studentsData));
     setExperimentStartTime(Date.now());
   }, []);
 
   // 切换选择状态
-  const toggleSelection = (childId) => {
+  const toggleSelection = (studentId) => {
     const currentTime = Date.now();
-    const isSelected = selectedChildren.includes(childId);
-    const childName = children.find(child => child.id === childId)?.name;
+    const isSelected = selectedStudents.includes(studentId);
+    const studentName = students.find(student => student.id === studentId)?.name;
 
       
     if (isSelected) {
       // 记录取消选择
-  setUserActivityLog(prev => [...prev, {
-    timestamp: currentTime,
-    timeFromStart: currentTime - experimentStartTime,
-    action: 'deselect',
-    childId: childId,
-    childName: childName,
-    sequenceNumber: prev.length + 1
-  }]);
-      setSelectedChildren(prev => prev.filter(id => id !== childId));
+      setUserActivityLog(prev => [...prev, {
+        timestamp: currentTime,
+        timeFromStart: currentTime - experimentStartTime,
+        action: 'deselect',
+        studentId: studentId,
+        studentName: studentName,
+        sequenceNumber: prev.length + 1
+      }]);
+      setSelectedStudents(prev => prev.filter(id => id !== studentId));
       setSelectionTimes(prev => ({
         ...prev,
-        [childId]: { ...prev[childId], deselectedAt: currentTime }
+        [studentId]: { ...prev[studentId], deselectedAt: currentTime }
       }));
     } else {
-      if (selectedChildren.length < maxSelections) {
+      if (selectedStudents.length < maxSelections) {
         
-         // 记录选择
-  setUserActivityLog(prev => [...prev, {
-    timestamp: currentTime,
-    timeFromStart: currentTime - experimentStartTime,
-    action: 'select',
-    childId: childId,
-    childName: childName,
-    sequenceNumber: prev.length + 1
-  }]);
+        // 记录选择
+        setUserActivityLog(prev => [...prev, {
+          timestamp: currentTime,
+          timeFromStart: currentTime - experimentStartTime,
+          action: 'select',
+          studentId: studentId,
+          studentName: studentName,
+          sequenceNumber: prev.length + 1
+        }]);
   
-        setSelectedChildren(prev => [...prev, childId]);
+        setSelectedStudents(prev => [...prev, studentId]);
         setSelectionTimes(prev => ({
           ...prev,
-          [childId]: { 
+          [studentId]: { 
             selectedAt: currentTime, 
             timeFromStart: currentTime - experimentStartTime,
-            selectionOrder: selectedChildren.length + 1
+            selectionOrder: selectedStudents.length + 1
           }
         }));
       } else {
-        alert(`You can only ${experimentType} ${maxSelections} children.`);
+        alert(`You can only ${experimentType} ${maxSelections} students.`);
       }
     }
   };
 
   // 处理提交
   const handleSubmit = () => {
-    if (selectedChildren.length === maxSelections) {
-      const selectedNames = selectedChildren.map(id => 
-        children.find(child => child.id === id)?.name
+    if (selectedStudents.length === maxSelections) {
+      const selectedNames = selectedStudents.map(id => 
+        students.find(student => student.id === id)?.name
       ).filter(Boolean);
       
       let experimentData;
       
       if (experimentType === 'choose') {
         experimentData = {
-          selectedChildrenIds: selectedChildren,
-          selectedChildrenNames: selectedNames,
-          selectionOrder: selectedChildren.map(id => ({
-            childId: id,
-            childName: children.find(child => child.id === id)?.name,
-            selectionOrder: selectionTimes[id]?.selectionOrder,
-            timeFromStart: selectionTimes[id]?.timeFromStart
-          })),
+          selectedStudentsIds: selectedStudents,
+          selectedStudentsNames: selectedNames,
           totalExperimentTime: Date.now() - experimentStartTime,
-          childrenOrder: children.map(child => ({ id: child.id, name: child.name })),
+          studentsOrder: students.map(student => ({ id: student.id, name: student.name })),
           experimentType: 'choose',
-          timestamp: new Date().toISOString(),
           userActivityLog: userActivityLog
         };
       } else {
-        const remainingChildren = children.filter(child => !selectedChildren.includes(child.id));
-        const remainingNames = remainingChildren.map(child => child.name);
+        const remainingStudents = students.filter(student => !selectedStudents.includes(student.id));
+        const remainingNames = remainingStudents.map(student => student.name);
         
         experimentData = {
-          removedChildrenIds: selectedChildren,
-          removedChildrenNames: selectedNames,
-          remainingChildrenIds: remainingChildren.map(child => child.id),
-          remainingChildrenNames: remainingNames,
-          removalOrder: selectedChildren.map(id => ({
-            childId: id,
-            childName: children.find(child => child.id === id)?.name,
-            removalOrder: selectionTimes[id]?.selectionOrder,
-            timeFromStart: selectionTimes[id]?.timeFromStart
-          })),
+          removedStudentsIds: selectedStudents,
+          removedStudentsNames: selectedNames,
+          remainingStudentsIds: remainingStudents.map(student => student.id),
+          remainingStudentsNames: remainingNames,
           totalExperimentTime: Date.now() - experimentStartTime,
-          childrenOrder: children.map(child => ({ id: child.id, name: child.name })),
+          studentsOrder: students.map(student => ({ id: student.id, name: student.name })),
           experimentType: 'remove',
-          timestamp: new Date().toISOString(),
           userActivityLog: userActivityLog
         };
       }
@@ -149,15 +139,15 @@ const ChildSponsorshipExperiment = () => {
         if (typeof window !== 'undefined' && window.Qualtrics && window.Qualtrics.SurveyEngine) {
           window.Qualtrics.SurveyEngine.setEmbeddedData('experimentData', JSON.stringify(experimentData));
           if (experimentType === 'choose') {
-            window.Qualtrics.SurveyEngine.setEmbeddedData('selectedChildren', selectedChildren.join(','));
-            window.Qualtrics.SurveyEngine.setEmbeddedData('selectedChildrenNames', selectedNames.join(','));
+            window.Qualtrics.SurveyEngine.setEmbeddedData('selectedStudents', selectedStudents.join(','));
+            window.Qualtrics.SurveyEngine.setEmbeddedData('selectedStudentsNames', selectedNames.join(','));
           } else {
-            const remainingChildren = children.filter(child => !selectedChildren.includes(child.id));
-            const remainingNames = remainingChildren.map(child => child.name);
-            window.Qualtrics.SurveyEngine.setEmbeddedData('removedChildren', selectedChildren.join(','));
-            window.Qualtrics.SurveyEngine.setEmbeddedData('removedChildrenNames', selectedNames.join(','));
-            window.Qualtrics.SurveyEngine.setEmbeddedData('remainingChildren', remainingChildren.map(child => child.id).join(','));
-            window.Qualtrics.SurveyEngine.setEmbeddedData('remainingChildrenNames', remainingNames.join(','));
+            const remainingStudents = students.filter(student => !selectedStudents.includes(student.id));
+            const remainingNames = remainingStudents.map(student => student.name);
+            window.Qualtrics.SurveyEngine.setEmbeddedData('removedStudents', selectedStudents.join(','));
+            window.Qualtrics.SurveyEngine.setEmbeddedData('removedStudentsNames', selectedNames.join(','));
+            window.Qualtrics.SurveyEngine.setEmbeddedData('remainingStudents', remainingStudents.map(student => student.id).join(','));
+            window.Qualtrics.SurveyEngine.setEmbeddedData('remainingStudentsNames', remainingNames.join(','));
           }
         }
         
@@ -170,14 +160,14 @@ const ChildSponsorshipExperiment = () => {
     }
   };
 
-  // 获取要显示的儿童
-  const displayChildren = isCompleted 
-    ? children.filter(child => selectedChildren.includes(child.id))
-    : children;
+  // 获取要显示的学生
+  const displayStudents = isCompleted 
+    ? students.filter(student => selectedStudents.includes(student.id))
+    : students;
 
   // 获取按钮文字和样式
-  const getButtonConfig = (child) => {
-    const isSelected = selectedChildren.includes(child.id);
+  const getButtonConfig = (student) => {
+    const isSelected = selectedStudents.includes(student.id);
     
     if (isCompleted) return null;
     
@@ -187,7 +177,7 @@ const ChildSponsorshipExperiment = () => {
         className: 'bg-gray-800 text-white border-2 border-gray-800'
       };
     } else {
-      if (selectedChildren.length >= maxSelections) {
+      if (selectedStudents.length >= maxSelections) {
         return {
           text: experimentType === 'choose' ? 'CHOOSE' : 'KEEPING',
           className: 'bg-gray-300 text-gray-500 cursor-not-allowed border-2 border-gray-300',
@@ -202,8 +192,8 @@ const ChildSponsorshipExperiment = () => {
     }
   };
 
-  const getCardStyle = (child) => {
-    const isSelected = selectedChildren.includes(child.id);
+  const getCardStyle = (student) => {
+    const isSelected = selectedStudents.includes(student.id);
     if (isSelected) {
       return 'border-gray-800 bg-gray-50';
     }
@@ -212,25 +202,25 @@ const ChildSponsorshipExperiment = () => {
 
   const getHighlightText = () => {
     if (experimentType === 'choose') {
-      return 'Please CHOOSE the child you would like to sponsor.';
+      return 'Please CHOOSE three students you would MOST like to sponsor.';
     } else {
-      return 'Please REMOVE the child you would not like to sponsor.';
+      return 'Please REMOVE three students you would LEAST like to sponsor.';
     }
   };
 
   const getInstructionText = () => {
     if (experimentType === 'choose') {
-      return 'Note: Before confirming, you can change your decision, click the child you previously selected and then choose again.';
+      return 'Note: Before confirming, you can change your decision, click the student you previously selected and then choose again.';
     } else {
-      return 'Note: Before confirming, you can change your decision, click the child you previously removed and then remove again.';
+      return 'Note: Before confirming, you can change your decision, click the student you previously removed and then remove again.';
     }
   };
 
   const getCounterText = () => {
     if (experimentType === 'choose') {
-      return `Selected: ${selectedChildren.length}/${maxSelections}`;
+      return `Selected: ${selectedStudents.length}/${maxSelections}`;
     } else {
-      return `Removed: ${selectedChildren.length}/${maxSelections}`;
+      return `Removed: ${selectedStudents.length}/${maxSelections}`;
     }
   };
 
@@ -244,7 +234,7 @@ const ChildSponsorshipExperiment = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 pb-20 sm:pb-24">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         
         {/* 头部和说明部分 - 只在未完成时显示 */}
         {!isCompleted && (
@@ -252,7 +242,7 @@ const ChildSponsorshipExperiment = () => {
             {/* 主标题 */}
             <div className="bg-white border-b-4 border-gray-800 rounded-lg p-8 sm:p-12 mb-8 text-center">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-800 leading-tight">
-                Sponsor a Child
+                Help Six Adult Students Finish Night School
               </h1>
             </div>
             
@@ -260,17 +250,18 @@ const ChildSponsorshipExperiment = () => {
             <div className="bg-white rounded-lg p-8 sm:p-10 mb-8 border border-gray-200">
               <div className="text-center space-y-6 text-gray-700 max-w-4xl mx-auto">
                 <p className="text-lg sm:text-xl leading-relaxed font-light">
-                  Smile Train is the world’s largest cleft-focused organization. Over the past 25+ years, it has supported safe, high-quality, free cleft care for more than two million children.
+                  Six adult students are attending night classes while working day jobs. A recent tuition increase and related fees pushed costs beyond what they can afford. 
+                  They ask for help. Donations will be used for tuition, allowing them to continue their studies without interruption.
                 </p>
+                
+            
               </div>
               
               {/* 高亮指示框 */}
               <div className="bg-gray-50 border-2 border-gray-400 rounded-lg p-6 sm:p-8 text-center mt-8">
-                <h3 className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
-                  Maine and Oleya have each received successful cleft palate surgery. Sponsorship helps fund their further care.
-                </h3>
+                
                 <p className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
-                  Now you are considering sponsoring one of them.
+                  Now you are considering sponsoring three of them.
                 </p>
                 <p className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
                   {getHighlightText()}
@@ -292,16 +283,16 @@ const ChildSponsorshipExperiment = () => {
           </div>
         )}
 
-        {/* 儿童卡片网格 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 mb-10">
-          {displayChildren.map(child => {
-            const isSelected = selectedChildren.includes(child.id);
-            const buttonConfig = getButtonConfig(child);
+        {/* 学生卡片网格 - 改为3列布局 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-10">
+          {displayStudents.map(student => {
+            const isSelected = selectedStudents.includes(student.id);
+            const buttonConfig = getButtonConfig(student);
             
             return (
               <div 
-                key={child.id} 
-                className={`bg-white rounded-lg border-2 transition-all duration-300 relative overflow-hidden ${getCardStyle(child)}`}
+                key={student.id} 
+                className={`bg-white rounded-lg border-2 transition-all duration-300 relative overflow-hidden ${getCardStyle(student)}`}
               >
                 {/* 选中标签 */}
                 {isSelected && (
@@ -311,29 +302,29 @@ const ChildSponsorshipExperiment = () => {
                 )}
                 
                 {/* 图片容器 */}
-                <div className="h-80 sm:h-96 bg-gray-50 flex items-center justify-center overflow-hidden">
+                <div className="h-64 sm:h-72 bg-gray-50 flex items-center justify-center overflow-hidden">
                   <img 
-                    src={`/images/${child.photo}`} 
-                    alt={child.name}
-                    className="w-full h-full object-contain grayscale"
+                    src={`/images/${student.photo}`} 
+                    alt={student.name}
+                    className="w-full h-full object-contain"
                     onError={(e) => {
                       e.target.style.display = 'none';
-                      e.target.parentElement.innerHTML = `<div class="text-gray-500 font-light text-lg">Photo of ${child.name}</div>`;
+                      e.target.parentElement.innerHTML = `<div class="text-gray-500 font-light text-lg">Photo of ${student.name}</div>`;
                     }}
                   />
                 </div>
                 
                 {/* 信息区域 */}
-                <div className="p-6 sm:p-8">
-                  <h3 className="text-2xl sm:text-3xl font-light text-gray-800 text-center mb-6">
-                    {child.name}
+                <div className="p-4 sm:p-6">
+                  <h3 className="text-xl sm:text-2xl font-light text-gray-800 text-center mb-4">
+                    {student.name}
                   </h3>
                   
                   {/* 按钮 - 只在未完成时显示 */}
                   {buttonConfig && (
                     <button 
-                      className={`w-full py-4 px-6 text-base font-medium rounded transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ${buttonConfig.className}`}
-                      onClick={() => !buttonConfig.disabled && toggleSelection(child.id)}
+                      className={`w-full py-3 px-4 text-sm font-medium rounded transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ${buttonConfig.className}`}
+                      onClick={() => !buttonConfig.disabled && toggleSelection(student.id)}
                       disabled={buttonConfig.disabled}
                     >
                       {buttonConfig.text}
@@ -359,12 +350,12 @@ const ChildSponsorshipExperiment = () => {
           <div className="flex justify-center mb-8">
             <button 
               className={`px-12 py-4 text-xl font-medium text-white rounded transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ${
-                selectedChildren.length === maxSelections 
+                selectedStudents.length === maxSelections 
                   ? 'bg-gray-800 hover:bg-gray-900' 
                   : 'bg-gray-400 cursor-not-allowed'
               }`}
               onClick={handleSubmit}
-              disabled={selectedChildren.length !== maxSelections}
+              disabled={selectedStudents.length !== maxSelections}
             >
               CONFIRM
             </button>
@@ -384,4 +375,4 @@ const ChildSponsorshipExperiment = () => {
   );
 };
 
-export default ChildSponsorshipExperiment;
+export default StudentSponsorshipExperiment;
