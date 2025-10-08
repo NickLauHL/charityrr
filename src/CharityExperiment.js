@@ -43,6 +43,73 @@ const StudentSponsorshipExperiment = () => {
     setExperimentStartTime(Date.now());
   }, []);
 
+  // 向Qualtrics父窗口发送调整大小的消息
+  useEffect(() => {
+    const sendResizeMessage = () => {
+      try {
+        // 获取当前页面高度
+        const height = Math.max(
+          document.body.scrollHeight,
+          document.body.offsetHeight,
+          document.documentElement.clientHeight,
+          document.documentElement.scrollHeight,
+          document.documentElement.offsetHeight
+        );
+        
+        // 发送消息给父窗口
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'RESIZE_IFRAME',
+            width: '100%',
+            height: height + 50 // 额外加50px避免滚动条
+          }, '*');
+        }
+      } catch (error) {
+        console.log('Resize message sending failed:', error);
+      }
+    };
+
+    // 初始发送
+    sendResizeMessage();
+    
+    // 延迟发送，确保内容已渲染
+    setTimeout(sendResizeMessage, 100);
+    setTimeout(sendResizeMessage, 500);
+    
+    // 监听窗口大小变化
+    window.addEventListener('resize', sendResizeMessage);
+    
+    return () => window.removeEventListener('resize', sendResizeMessage);
+  }, []);
+
+  // 当内容变化时重新发送大小消息
+  useEffect(() => {
+    const sendResizeMessage = () => {
+      try {
+        const height = Math.max(
+          document.body.scrollHeight,
+          document.body.offsetHeight,
+          document.documentElement.clientHeight,
+          document.documentElement.scrollHeight,
+          document.documentElement.offsetHeight
+        );
+        
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'RESIZE_IFRAME',
+            width: '100%',
+            height: height + 50
+          }, '*');
+        }
+      } catch (error) {
+        console.log('Resize message sending failed:', error);
+      }
+    };
+
+    sendResizeMessage();
+    setTimeout(sendResizeMessage, 100);
+  }, [selectedStudents, isCompleted]);
+
   // 切换选择状态
   const toggleSelection = (studentId) => {
     const currentTime = Date.now();
