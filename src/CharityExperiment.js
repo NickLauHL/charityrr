@@ -47,21 +47,16 @@ const StudentSponsorshipExperiment = () => {
   useEffect(() => {
     const sendResizeMessage = () => {
       try {
-        // 获取当前页面高度
-        const height = Math.max(
-          document.body.scrollHeight,
-          document.body.offsetHeight,
-          document.documentElement.clientHeight,
-          document.documentElement.scrollHeight,
-          document.documentElement.offsetHeight
-        );
+        // 获取主容器的实际高度
+        const mainContainer = document.querySelector('.main-container');
+        const height = mainContainer ? mainContainer.offsetHeight : document.body.scrollHeight;
         
         // 发送消息给父窗口
         if (window.parent && window.parent !== window) {
           window.parent.postMessage({
             type: 'RESIZE_IFRAME',
             width: '100%',
-            height: height + 50 // 额外加50px避免滚动条
+            height: height + 20 // 只加20px的额外空间
           }, '*');
         }
       } catch (error) {
@@ -75,6 +70,7 @@ const StudentSponsorshipExperiment = () => {
     // 延迟发送，确保内容已渲染
     setTimeout(sendResizeMessage, 100);
     setTimeout(sendResizeMessage, 500);
+    setTimeout(sendResizeMessage, 1000);
     
     // 监听窗口大小变化
     window.addEventListener('resize', sendResizeMessage);
@@ -86,19 +82,14 @@ const StudentSponsorshipExperiment = () => {
   useEffect(() => {
     const sendResizeMessage = () => {
       try {
-        const height = Math.max(
-          document.body.scrollHeight,
-          document.body.offsetHeight,
-          document.documentElement.clientHeight,
-          document.documentElement.scrollHeight,
-          document.documentElement.offsetHeight
-        );
+        const mainContainer = document.querySelector('.main-container');
+        const height = mainContainer ? mainContainer.offsetHeight : document.body.scrollHeight;
         
         if (window.parent && window.parent !== window) {
           window.parent.postMessage({
             type: 'RESIZE_IFRAME',
             width: '100%',
-            height: height + 50
+            height: height + 20
           }, '*');
         }
       } catch (error) {
@@ -108,6 +99,7 @@ const StudentSponsorshipExperiment = () => {
 
     sendResizeMessage();
     setTimeout(sendResizeMessage, 100);
+    setTimeout(sendResizeMessage, 300);
   }, [selectedStudents, isCompleted]);
 
   // 切换选择状态
@@ -300,23 +292,23 @@ const StudentSponsorshipExperiment = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-20 sm:pb-24">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div className="bg-gray-100">
+      <div className="main-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 sm:pb-28">
         
         {/* 头部和说明部分 - 只在未完成时显示 */}
         {!isCompleted && (
           <>
             {/* 主标题 */}
-            <div className="bg-white border-b-4 border-gray-800 rounded-lg p-8 sm:p-12 mb-8 text-center">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-800 leading-tight">
+            <div className="bg-white border-b-4 border-gray-800 rounded-lg p-6 sm:p-8 mb-6 text-center">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-light text-gray-800 leading-tight">
                 Help Six Adult Students Finish Night School
               </h1>
             </div>
             
             {/* 使命说明 */}
-            <div className="bg-white rounded-lg p-8 sm:p-10 mb-8 border border-gray-200">
-              <div className="text-center space-y-6 text-gray-700 max-w-4xl mx-auto">
-                <p className="text-lg sm:text-xl leading-relaxed font-light">
+            <div className="bg-white rounded-lg p-6 sm:p-8 mb-6 border border-gray-200">
+              <div className="text-center space-y-4 text-gray-700 max-w-5xl mx-auto">
+                <p className="text-base sm:text-lg leading-relaxed font-light">
                   Six adult students are attending night classes while working day jobs. A recent tuition increase and related fees pushed costs beyond what they can afford. 
                   They ask for help. Donations will be used for tuition, allowing them to continue their studies without interruption.
                 </p>
@@ -325,12 +317,12 @@ const StudentSponsorshipExperiment = () => {
               </div>
               
               {/* 高亮指示框 */}
-              <div className="bg-gray-50 border-2 border-gray-400 rounded-lg p-6 sm:p-8 text-center mt-8">
+              <div className="bg-gray-50 border-2 border-gray-400 rounded-lg p-5 sm:p-6 text-center mt-6">
                 
-                <p className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
+                <p className="text-gray-700 text-lg sm:text-xl font-medium mb-3">
                   Now you are considering sponsoring three of them.
                 </p>
-                <p className="text-gray-700 text-xl sm:text-2xl font-medium mb-4">
+                <p className="text-gray-700 text-lg sm:text-xl font-medium mb-3">
                   {getHighlightText()}
                 </p>
                 <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
@@ -343,15 +335,15 @@ const StudentSponsorshipExperiment = () => {
 
         {/* 完成标题 - 只在完成时显示 */}
         {isCompleted && (
-          <div className="bg-white border-b-4 border-gray-800 rounded-lg p-8 sm:p-10 mb-8 text-center">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-800">
+          <div className="bg-white border-b-4 border-gray-800 rounded-lg p-6 sm:p-8 mb-6 text-center">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-light text-gray-800">
               {getCompletionTitle()}
             </h1>
           </div>
         )}
 
         {/* 学生卡片网格 - 改为3列布局 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
           {displayStudents.map(student => {
             const isSelected = selectedStudents.includes(student.id);
             const buttonConfig = getButtonConfig(student);
@@ -369,7 +361,7 @@ const StudentSponsorshipExperiment = () => {
                 )}
                 
                 {/* 图片容器 */}
-                <div className="h-64 sm:h-72 bg-gray-50 flex items-center justify-center overflow-hidden">
+                <div className="h-56 sm:h-64 bg-gray-50 flex items-center justify-center overflow-hidden">
                   <img 
                     src={`/images/${student.photo}`} 
                     alt={student.name}
@@ -382,8 +374,8 @@ const StudentSponsorshipExperiment = () => {
                 </div>
                 
                 {/* 信息区域 */}
-                <div className="p-4 sm:p-6">
-                  <h3 className="text-xl sm:text-2xl font-light text-gray-800 text-center mb-4">
+                <div className="p-4 sm:p-5">
+                  <h3 className="text-lg sm:text-xl font-light text-gray-800 text-center mb-3">
                     {student.name}
                   </h3>
                   
@@ -405,8 +397,8 @@ const StudentSponsorshipExperiment = () => {
 
         {/* 完成感谢信息 */}
         {isCompleted && (
-          <div className="bg-white rounded-lg p-8 sm:p-10 border border-gray-200 text-center">
-            <p className="text-lg sm:text-xl font-light text-gray-700 leading-relaxed">
+          <div className="bg-white rounded-lg p-6 sm:p-8 border border-gray-200 text-center">
+            <p className="text-base sm:text-lg font-light text-gray-700 leading-relaxed">
               Thanks for participating. Your response has been submitted to us. Please back to Qualtrics and complete the survey.
             </p>
           </div>
@@ -414,9 +406,9 @@ const StudentSponsorshipExperiment = () => {
 
         {/* 确认按钮 - 只在未完成时显示 */}
         {!isCompleted && (
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-6">
             <button 
-              className={`px-12 py-4 text-xl font-medium text-white rounded transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ${
+              className={`px-10 py-3 text-lg font-medium text-white rounded transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ${
                 selectedStudents.length === maxSelections 
                   ? 'bg-gray-800 hover:bg-gray-900' 
                   : 'bg-gray-400 cursor-not-allowed'
@@ -432,8 +424,8 @@ const StudentSponsorshipExperiment = () => {
 
       {/* 固定计数器 - 只在未完成时显示 */}
       {!isCompleted && (
-        <div className="fixed bottom-6 left-6 right-6 sm:left-auto sm:right-6 sm:w-auto">
-          <div className="bg-white border-2 border-gray-800 text-gray-800 px-6 py-3 rounded font-medium text-center text-base shadow-sm">
+        <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:w-auto">
+          <div className="bg-white border-2 border-gray-800 text-gray-800 px-5 py-2 rounded font-medium text-center text-sm sm:text-base shadow-sm">
             {getCounterText()}
           </div>
         </div>
