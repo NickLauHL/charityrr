@@ -28,7 +28,7 @@ const StudentSponsorshipExperiment = () => {
   const [selectionTimes, setSelectionTimes] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [userActivityLog, setUserActivityLog] = useState([]);
-  const maxSelections = 3; // 改为六选三
+  const maxSelections = 3;
 
   // 打乱数组函数
   const shuffleArray = (array) => {
@@ -50,16 +50,14 @@ const StudentSponsorshipExperiment = () => {
   useEffect(() => {
     const sendResizeMessage = () => {
       try {
-        // 获取主容器的实际高度
         const mainContainer = document.querySelector('.main-container');
         const height = mainContainer ? mainContainer.offsetHeight : document.body.scrollHeight;
         
-        // 发送消息给父窗口
         if (window.parent && window.parent !== window) {
           window.parent.postMessage({
             type: 'RESIZE_IFRAME',
             width: '100%',
-            height: height + 20 // 只加20px的额外空间
+            height: height + 40
           }, '*');
         }
       } catch (error) {
@@ -67,15 +65,11 @@ const StudentSponsorshipExperiment = () => {
       }
     };
 
-    // 初始发送
     sendResizeMessage();
-    
-    // 延迟发送，确保内容已渲染
     setTimeout(sendResizeMessage, 100);
     setTimeout(sendResizeMessage, 500);
     setTimeout(sendResizeMessage, 1000);
     
-    // 监听窗口大小变化
     window.addEventListener('resize', sendResizeMessage);
     
     return () => window.removeEventListener('resize', sendResizeMessage);
@@ -92,7 +86,7 @@ const StudentSponsorshipExperiment = () => {
           window.parent.postMessage({
             type: 'RESIZE_IFRAME',
             width: '100%',
-            height: height + 20
+            height: height + 40
           }, '*');
         }
       } catch (error) {
@@ -113,7 +107,6 @@ const StudentSponsorshipExperiment = () => {
 
       
     if (isSelected) {
-      // 记录取消选择
       setUserActivityLog(prev => [...prev, {
         timestamp: currentTime,
         timeFromStart: currentTime - experimentStartTime,
@@ -129,8 +122,6 @@ const StudentSponsorshipExperiment = () => {
       }));
     } else {
       if (selectedStudents.length < maxSelections) {
-        
-        // 记录选择
         setUserActivityLog(prev => [...prev, {
           timestamp: currentTime,
           timeFromStart: currentTime - experimentStartTime,
@@ -196,21 +187,6 @@ const StudentSponsorshipExperiment = () => {
             type: 'EXPERIMENT_COMPLETE',
             data: experimentData
           }, '*');
-        }
-        
-        if (typeof window !== 'undefined' && window.Qualtrics && window.Qualtrics.SurveyEngine) {
-          window.Qualtrics.SurveyEngine.setEmbeddedData('experimentData', JSON.stringify(experimentData));
-          if (experimentType === 'choose') {
-            window.Qualtrics.SurveyEngine.setEmbeddedData('selectedStudents', selectedStudents.join(','));
-            window.Qualtrics.SurveyEngine.setEmbeddedData('selectedStudentsNames', selectedNames.join(','));
-          } else {
-            const remainingStudents = students.filter(student => !selectedStudents.includes(student.id));
-            const remainingNames = remainingStudents.map(student => student.name);
-            window.Qualtrics.SurveyEngine.setEmbeddedData('removedStudents', selectedStudents.join(','));
-            window.Qualtrics.SurveyEngine.setEmbeddedData('removedStudentsNames', selectedNames.join(','));
-            window.Qualtrics.SurveyEngine.setEmbeddedData('remainingStudents', remainingStudents.map(student => student.id).join(','));
-            window.Qualtrics.SurveyEngine.setEmbeddedData('remainingStudentsNames', remainingNames.join(','));
-          }
         }
         
         console.log('Experiment completed:', experimentData);
@@ -295,40 +271,37 @@ const StudentSponsorshipExperiment = () => {
   };
 
   return (
-    <div className="bg-gray-100">
-      <div className={`main-container ${isInIframe ? 'w-full px-3 sm:px-6' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'} py-4 sm:py-6 pb-20 sm:pb-24`}>
+    <div className="bg-gray-100 min-h-screen">
+      <div className={`main-container w-full ${isInIframe ? 'px-4 sm:px-8 lg:px-12' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'} py-6 pb-24`}>
         
         {/* 头部和说明部分 - 只在未完成时显示 */}
         {!isCompleted && (
           <>
             {/* 主标题 */}
-            <div className="bg-white border-b-4 border-gray-800 rounded-lg p-4 sm:p-6 mb-4 text-center">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-light text-gray-800 leading-tight">
+            <div className="bg-white border-b-4 border-gray-800 rounded-lg p-6 mb-4 text-center">
+              <h1 className="text-2xl sm:text-3xl font-light text-gray-800 leading-tight">
                 Help Six Adult Students Finish Night School
               </h1>
             </div>
             
             {/* 使命说明 */}
-            <div className="bg-white rounded-lg p-4 sm:p-6 mb-4 border border-gray-200">
+            <div className="bg-white rounded-lg p-6 mb-6 border border-gray-200">
               <div className="text-center space-y-3 text-gray-700 max-w-5xl mx-auto">
-                <p className="text-sm sm:text-base leading-relaxed font-light">
+                <p className="text-base leading-relaxed font-light">
                   Six adult students are attending night classes while working day jobs. A recent tuition increase and related fees pushed costs beyond what they can afford. 
                   They ask for help. Donations will be used for tuition, allowing them to continue their studies without interruption.
                 </p>
-                
-            
               </div>
               
               {/* 高亮指示框 */}
-              <div className="bg-gray-50 border-2 border-gray-400 rounded-lg p-4 sm:p-5 text-center mt-4">
-                
-                <p className="text-gray-700 text-base sm:text-lg font-medium mb-2">
+              <div className="bg-gray-50 border-2 border-gray-400 rounded-lg p-5 text-center mt-4">
+                <p className="text-gray-700 text-lg font-medium mb-2">
                   Now you are considering sponsoring three of them.
                 </p>
-                <p className="text-gray-700 text-base sm:text-lg font-medium mb-2">
+                <p className="text-gray-700 text-lg font-medium mb-2">
                   {getHighlightText()}
                 </p>
-                <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+                <p className="text-gray-300 text-base leading-relaxed">
                   {getInstructionText()}
                 </p>
               </div>
@@ -338,15 +311,19 @@ const StudentSponsorshipExperiment = () => {
 
         {/* 完成标题 - 只在完成时显示 */}
         {isCompleted && (
-          <div className="bg-white border-b-4 border-gray-800 rounded-lg p-4 sm:p-6 mb-4 text-center">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-light text-gray-800">
+          <div className="bg-white border-b-4 border-gray-800 rounded-lg p-6 mb-6 text-center">
+            <h1 className="text-2xl sm:text-3xl font-light text-gray-800">
               {getCompletionTitle()}
             </h1>
           </div>
         )}
 
-        {/* 学生卡片网格 - 降低3列布局断点 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-6">
+        {/* 学生卡片网格 - 在iframe中使用更宽的布局 */}
+        <div className={`grid gap-4 sm:gap-6 mb-6 ${
+          isInIframe 
+            ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3' 
+            : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'
+        }`}>
           {displayStudents.map(student => {
             const isSelected = selectedStudents.includes(student.id);
             const buttonConfig = getButtonConfig(student);
@@ -364,7 +341,7 @@ const StudentSponsorshipExperiment = () => {
                 )}
                 
                 {/* 图片容器 */}
-                <div className="h-48 sm:h-52 md:h-56 bg-gray-50 flex items-center justify-center overflow-hidden">
+                <div className="h-56 bg-gray-50 flex items-center justify-center overflow-hidden">
                   <img 
                     src={`/images/${student.photo}`} 
                     alt={student.name}
@@ -377,8 +354,8 @@ const StudentSponsorshipExperiment = () => {
                 </div>
                 
                 {/* 信息区域 */}
-                <div className="p-3 sm:p-4">
-                  <h3 className="text-base sm:text-lg font-light text-gray-800 text-center mb-2">
+                <div className="p-4">
+                  <h3 className="text-lg font-light text-gray-800 text-center mb-3">
                     {student.name}
                   </h3>
                   
@@ -400,8 +377,8 @@ const StudentSponsorshipExperiment = () => {
 
         {/* 完成感谢信息 */}
         {isCompleted && (
-          <div className="bg-white rounded-lg p-4 sm:p-6 border border-gray-200 text-center">
-            <p className="text-sm sm:text-base font-light text-gray-700 leading-relaxed">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 text-center">
+            <p className="text-base font-light text-gray-700 leading-relaxed">
               Thanks for participating. Your response has been submitted to us. Please back to Qualtrics and complete the survey.
             </p>
           </div>
@@ -411,7 +388,7 @@ const StudentSponsorshipExperiment = () => {
         {!isCompleted && (
           <div className="flex justify-center mb-4">
             <button 
-              className={`px-8 py-2.5 text-base font-medium text-white rounded transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ${
+              className={`px-8 py-3 text-base font-medium text-white rounded transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ${
                 selectedStudents.length === maxSelections 
                   ? 'bg-gray-800 hover:bg-gray-900' 
                   : 'bg-gray-400 cursor-not-allowed'
@@ -428,7 +405,7 @@ const StudentSponsorshipExperiment = () => {
       {/* 固定计数器 - 只在未完成时显示 */}
       {!isCompleted && (
         <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:w-auto">
-          <div className="bg-white border-2 border-gray-800 text-gray-800 px-5 py-2 rounded font-medium text-center text-sm sm:text-base shadow-sm">
+          <div className="bg-white border-2 border-gray-800 text-gray-800 px-5 py-2 rounded font-medium text-center text-base shadow-sm">
             {getCounterText()}
           </div>
         </div>
